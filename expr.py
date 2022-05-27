@@ -1,3 +1,9 @@
+def simplify(val):
+    if isinstance(val, float) and val == int(val):
+        val = int(val)
+    return val
+
+
 class Expression:
     def __init__(self, *args):
         self.args = args
@@ -18,7 +24,7 @@ class BinaryExpr(Expression):
         self.right = right
 
     def eval(self):
-        return GLOBALS[self.operator](self.left.eval(), self.right.eval())
+        return simplify(GLOBALS[self.operator](self.left.eval(), self.right.eval()))
 
 
 class CallExpr(Expression):
@@ -28,7 +34,7 @@ class CallExpr(Expression):
         self.operand = operand
 
     def eval(self):
-        return GLOBALS[self.operator](self.operand.eval())
+        return simplify(GLOBALS[self.operator](self.operand.eval()))
 
 
 class Literal(Expression):
@@ -37,11 +43,14 @@ class Literal(Expression):
         self.value = value
 
     def eval(self):
-        return self.value
+        if isinstance(self.value, int) or isinstance(self.value, float):
+            return simplify(self.value)
+        else:
+            return GLOBALS[self.value]
 
 
 from operator import add, sub, mul, truediv
-from math import log, sqrt
+from math import log, sqrt, pi, e
 
 GLOBALS = {
     "+": add,
@@ -52,4 +61,6 @@ GLOBALS = {
     "log": log,
     "sqrt": sqrt,
     "neg": lambda x: -x,
+    "pi": pi,
+    "e": e,
 }
