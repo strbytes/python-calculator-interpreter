@@ -84,25 +84,27 @@ def exponent(source):
 
 
 def call_expr(source):
-    if is_name(source.current) and source.next == "(":
+    if is_name(source.current) and source.next == "(":  # )
         operator = source.pop()
         right = literal(source)
         return CallExpr(operator, right)
     return literal(source)
 
 
-def literal(src):
-    if is_literal(src.current) or is_name(src.current):
-        return Literal(src.pop())
-    elif src.current == "(":  # )
-        src.pop()
-        expression = parser(src)
+def literal(source):
+    if is_literal(source.current):
+        return Literal(source.pop())
+    if is_name(source.current) and source.next != "(":  # )
+        return Literal(source.pop())
+    elif source.current == "(":  # )
+        source.pop()
+        expression = parser(source)
         # don't require closing parens but get rid of it if it's there
-        if src.current == ")":
-            src.pop()
+        if source.current == ")":
+            source.pop()
         return expression
     else:
-        raise SyntaxError(f"Invalid literal {src.current}")
+        raise SyntaxError(f"Invalid literal {source.current}")
 
 
 class Buffer:
