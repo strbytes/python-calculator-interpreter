@@ -56,11 +56,53 @@ def is_name(token):
     return isinstance(token, str) and token not in OPERATORS
 
 
-def parser(source, expr):
+def parser(source):
     """Convert a sequence of tokens into a nested expression"""
-    val = source.pop()
-    if is_literal(val):
-        return term(source, val)
+    expression = factor(source)
+    while source.current in TERMS:
+        operator = source.pop()
+        right = factor(source)
+        expression = BinaryExpr(expression, operator, right)
+    return expression
+
+
+def factor(source):
+    expression = exponent(source)
+    while source.current in FACTORS:
+        operator = source.pop()
+        right = exponent(source)
+        expression = BinaryExpr(expression, operator, right)
+    return expression
+
+
+def exponent(source):
+    expression = unary(source)
+    while source.current == EXPONENT:
+        operator = source.pop()
+        right = unary(source)
+        expression = BinaryExpr(expression, operator, right)
+    return expression
+
+
+def unary(source):
+    if is_name(source.current):
+        operator = source.pop()
+        right = unary(source)
+        return UnaryExpr(operator, right)
+    return literal(source)
+
+
+def literal(source):
+    if is_literal(source.current):
+        return Literal(source.pop())
+    elif source.current == "(":  # )
+        expression = parser(source.pop())
+        # don't require closing parens but get rid of it if it's there
+        if source.current == ")":
+            source.pop()
+        return expression
+    else:
+        raise SyntaxError("Invalid literal")
 
 
 class Buffer:
