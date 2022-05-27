@@ -51,7 +51,7 @@ def test_literal(buffer_simple):
 
 @pytest.fixture
 def buffer_call():
-    return read.Buffer(read.lexer("sin(2x)"))
+    return read.Buffer(read.lexer("sin(2ans"))
 
 
 @pytest.fixture
@@ -60,9 +60,17 @@ def mock_literal(monkeypatch):
     monkeypatch.setattr(read, "literal", mock)
 
 
-def test_call_expr(buffer_simple, buffer_call, mock_literal):
+def test_call_expr_simple(buffer_simple, buffer_call, mock_literal):
     c = read.call_expr(buffer_simple)
     assert isinstance(c, read.Literal)
     c = read.call_expr(buffer_call)
     assert isinstance(c, read.CallExpr)
     assert c.operator == "sin"
+
+
+def test_parser(buffer_call):
+    c = read.parser(buffer_call)
+    assert isinstance(c, read.CallExpr)
+    assert c.operator == "sin"
+    assert isinstance(c.operand, read.BinaryExpr)
+    assert c.operand.operator == "*"
