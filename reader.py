@@ -2,8 +2,7 @@ from expr import *
 import string
 
 # tokens
-NAME_STARTS = set(string.ascii_letters)
-NAME_INNERS = NAME_STARTS | set(string.digits)
+NAME = set(string.ascii_letters + "_")
 NUMERIC = set(string.digits + ".")
 TERMS = set("+-")
 FACTORS = set("*/")
@@ -33,9 +32,9 @@ def lexer(s):
                     tokens.append(float(token))
                 except:
                     raise SyntaxError(f"{token} is not a well-formed number")
-        elif s[i] in NAME_STARTS:
+        elif s[i] in NAME:
             token = ""
-            while i < len(s) and s[i] in NAME_INNERS:
+            while i < len(s) and s[i] in NAME:
                 token += s[i]
                 i += 1
             tokens.append(token)
@@ -76,33 +75,34 @@ def factor(source):
 
 
 def exponent(source):
-    expression = unary(source)
-    while source.current == EXPONENT:
+    expression = call_expr(source)
+    while source.current in EXPONENT:
         operator = source.pop()
-        right = unary(source)
+        right = call_expr(source)
         expression = BinaryExpr(expression, operator, right)
     return expression
 
 
-def unary(source):
-    if is_name(source.current):
+def call_expr(source):
+    if is_name(source.current) and source.next == "(":
         operator = source.pop()
-        right = unary(source)
-        return UnaryExpr(operator, right)
+        right = literal(source)
+        return CallExpr(operator, right)
     return literal(source)
 
 
-def literal(source):
-    if is_literal(source.current):
-        return Literal(source.pop())
-    elif source.current == "(":  # )
-        expression = parser(source.pop())
+def literal(src):
+    if is_literal(src.current) or is_name(src.current):
+        return Literal(src.pop())
+    elif src.current == "(":  # )
+        src.pop()
+        expression = parser(src)
         # don't require closing parens but get rid of it if it's there
-        if source.current == ")":
-            source.pop()
+        if src.current == ")":
+            src.pop()
         return expression
     else:
-        raise SyntaxError("Invalid literal")
+        raise SyntaxError(f"Invalid literal {src.current}")
 
 
 class Buffer:
@@ -112,9 +112,27 @@ class Buffer:
 
     @property
     def current(self):
+        if self.index >= len(self.tokens):
+            return None
         return self.tokens[self.index]
 
+    @property
+    def next(self):
+        if self.index + 1 >= len(self.tokens):
+            return None
+        return self.tokens[self.index + 1]
+
     def pop(self):
-        value = self.current()
-        self.index += 1
+        value = self.current
+        if self.index < len(self.tokens):
+            self.check_implicit_mul()
+            self.index += 1
         return value
+
+    def check_implicit_mul(self):
+        if is_literal(self.current) or self.current == ")":
+            if is_literal(self.next) or is_name(self.next) or self.next == "(":  # )
+                self.tokens.insert(self.index + 1, "*")
+
+    def __repr__(self):
+        return "Buffer(" + str(self.tokens) + ")"
