@@ -2,7 +2,7 @@
 
 A simple calculator interpreter that can evaluate one-line expressions with only primitive operators and numbers. Eventually I want to implement this in JavaScript and allow a user to enter expressions using a web mockup of a calculator, something like a TI-30.
 
-It seems to work right now, accoring roughly to how I remember my middle-school TI-30 and TI-84 working.
+It seems to work right now, according roughly to how I remember my middle-school TI-30 and TI-84 working.
 
 To run, run calc.py with Python. Can evaluate simple arithmetic expressions and predefined functions. Do not include whitespace in your expressions. Examples:
 
