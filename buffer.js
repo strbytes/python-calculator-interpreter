@@ -40,5 +40,5 @@ class TokenBuffer {
   }
 }
 
-exports.TokenBuffer = TokenBuffer;
+module.exports = TokenBuffer;
 

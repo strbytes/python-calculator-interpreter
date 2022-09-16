@@ -57,5 +57,5 @@ function parseNumber(token) {
   return literal;
 }
 
-exports.lexer = lexer;
+module.exports = lexer;
 
