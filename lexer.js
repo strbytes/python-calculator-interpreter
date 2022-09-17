@@ -2,10 +2,6 @@
 // https://hasnode.byrayray.dev/how-to-generate-an-alphabet-array-with-javascript
 const Letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97)); 
 const Numbers = [...Array(10)].map((_, i) => i.toString());
-const Terms = ["+", "-"];
-const Factors = ["*", "/"];
-const Exponents = ["^", "**"];
-const Delimiters = ["(", ")"];
 const Operators = ["+", "-", "*", "/", "^", "(", ")"]
 
 /* Convert an input string into a Buffer of tokens. */
