@@ -6,7 +6,7 @@ const Terms = ["+", "-"];
 const Factors = ["*", "/"];
 const Exponents = ["^", "**"];
 const Delimiters = ["(", ")"];
-const Operators = Terms.concat(Factors).concat(Exponents).concat(Delimiters);
+const Operators = ["+", "-", "*", "/", "^", "(", ")"]
 
 /* Convert an input string into a Buffer of tokens. */
 function lexer(s) {
