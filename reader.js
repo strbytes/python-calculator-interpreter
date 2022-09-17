@@ -1,7 +1,8 @@
 const lexer = require('./lexer');
 const TokenBuffer = require('./buffer');
+const parser = require('./parser')
 
 function reader(s) {
-  return new TokenBuffer(lexer(s));
+  return parser(new TokenBuffer(lexer(s)));
 }
 
