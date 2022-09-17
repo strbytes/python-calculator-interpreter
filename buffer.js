@@ -38,6 +38,18 @@ class TokenBuffer {
     this.#index += 1;
     return token;
   }
+  
+  toString() {
+    let stringBuilder = [];
+    for (let i = 0; i < this.#tokens.length; i ++) {
+      let t = this.#tokens[i];
+      if (i == this.#index) {
+        t = "_" + t + "_";
+      }
+      stringBuilder.push(t);
+    }
+    return "TokenBuffer[ '" + stringBuilder.join("', '") + "' ]";
+  }
 }
 
 module.exports = TokenBuffer;

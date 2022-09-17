@@ -32,7 +32,7 @@ class BinaryExpr extends Expression {
   #right;
 
   constructor(left, operator, right) {
-    super();
+    super(left, operator, right);
     this.#left = left;
     this.#operator = operator;
     this.#right = right;
@@ -51,7 +51,7 @@ class CallExpr extends Expression {
   #operand;
   
   constructor(operator, operand) {
-    super();
+    super(operator, operand);
     this.#operator = operator;
     this.#operand = operand;
   }
@@ -67,10 +67,10 @@ class Literal extends Expression {
   #value;
   
   constructor(value) {
-    super();
+    super(value);
     this.#value = value;
   }
-  
+
   eval() {
     if (typeof this.#value == 'number') {
       return this.#value;
