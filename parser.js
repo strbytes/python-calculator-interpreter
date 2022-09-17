@@ -53,20 +53,24 @@ function callExpr(source) {
 }
 
 function literal(source) {
+  let expression;
   if (is_literal(source.current) || is_name(source.current)) {
-    return new Literal(source.pop());
-  // } else if (is_name(source.current) && source.next !== "(") {
-  //   return new Literal(source.pop());
+    expression = new Literal(source.pop());
   } else if (source.current === "(") {
     source.pop();
-    let expression = parser(source);
+    expression = parser(source);
     if (source.current === ")") {
       source.pop()
     }
-    return expression;
   } else {
     throw `Invalid literal ${source.current}`;
   }
+  if (   is_literal(source.current) 
+      || is_name(source.current) 
+      || source.current === "(" ) {
+    expression = new BinaryExpr(expression, "*", exponent(source));
+  }
+  return expression;
 }
 
 function is_literal(token) {
@@ -74,7 +78,7 @@ function is_literal(token) {
 }
 
 function is_name(token) {
-  return /^[a-zA-Z]+$/.test(token);
+  return token ? /^[a-zA-Z]+$/.test(token) : false;
 }
 
 module.exports = parser;
