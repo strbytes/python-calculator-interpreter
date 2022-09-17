@@ -57,7 +57,13 @@ class CallExpr extends Expression {
   }
   
   eval() {
+    if (!Globals[this.#operator]) {
+      throw `Name ${this.#operator} not found`;
+    }
     let operator = Globals[this.#operator];
+    if (typeof operator != "function") {
+      throw `${this.#operator} is not a function`;
+    }
     let operand = this.#operand.eval();
     return operator(operand);
   }
@@ -76,7 +82,7 @@ class Literal extends Expression {
       return this.#value;
     } else {
       if (!Globals[this.#value]) {
-        throw `Name ${this.#value} not found`
+        throw `Name ${this.#value} not found`;
       }
       return Globals[this.#value];
     }
