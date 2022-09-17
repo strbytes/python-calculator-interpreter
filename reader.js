@@ -6,3 +6,4 @@ function reader(s) {
   return parser(new TokenBuffer(lexer(s)));
 }
 
+module.exports = reader;
