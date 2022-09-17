@@ -7,7 +7,6 @@ function repl() {
       console.log(read(readlineSync.question("> ")).eval());
     } catch (e) {
         console.log(e);
-        return;
     }
   }
 }

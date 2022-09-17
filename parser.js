@@ -53,10 +53,10 @@ function callExpr(source) {
 }
 
 function literal(source) {
-  if (is_literal(source.current)) {
+  if (is_literal(source.current) || is_name(source.current)) {
     return new Literal(source.pop());
-  } else if (is_name(source.current) && source.next !== "(") {
-    return new Literal(source.pop());
+  // } else if (is_name(source.current) && source.next !== "(") {
+  //   return new Literal(source.pop());
   } else if (source.current === "(") {
     source.pop();
     let expression = parser(source);

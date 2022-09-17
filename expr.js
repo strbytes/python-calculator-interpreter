@@ -75,6 +75,9 @@ class Literal extends Expression {
     if (typeof this.#value == 'number') {
       return this.#value;
     } else {
+      if (!Globals[this.#value]) {
+        throw `Name ${this.#value} not found`
+      }
       return Globals[this.#value];
     }
   }
